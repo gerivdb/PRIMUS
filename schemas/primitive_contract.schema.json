@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PrimitiveContract",
+  "description": "Contrat d'interface obligatoire pour toute primitive PRIMUS",
+  "type": "object",
+  "required": ["id", "category", "input", "output", "stateless", "max_lines"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Identifiant unique snake_case de la primitive"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["parsing", "comparison", "formatting", "validation", "deduction"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Une phrase. Ce que la primitive fait exactement."
+    },
+    "input": {
+      "type": "object",
+      "description": "Types des paramètres d'entrée"
+    },
+    "output": {
+      "type": "object",
+      "description": "Type et structure du retour"
+    },
+    "stateless": {
+      "type": "boolean",
+      "const": true,
+      "description": "Doit toujours être true"
+    },
+    "max_lines": {
+      "type": "integer",
+      "maximum": 100,
+      "description": "Au-delà de 100 lignes → candidat CTULU tool"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Uniquement d'autres IDs PRIMUS ou modules stdlib"
+    },
+    "consumed_by": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["CTULU", "SKILLS", "NEXUS"]
+      }
+    }
+  }
+}
