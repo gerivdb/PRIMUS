@@ -1,0 +1,32 @@
+# citizens.yaml — PRIMUS
+# Standard RSS-v2 §5.3 — obligatoire dans tout repo Diamond actif
+# Chargé automatiquement par ECOS-CLI et KIVA au démarrage de session IA
+
+citizens:
+  - id: "HITL"
+    role: "Architecte primitives atomiques — responsable du contrat PRIMUS"
+    responsibilities:
+      - "Garantir le contrat atomique de chaque primitive (< 100 lignes, stateless, stdlib)"
+      - "Valider que chaque primitive est couverte par un test unitaire"
+      - "Arbitrer les candidats à la migration PRIMUS → CTULU (si > 100 lignes ou stateful)"
+      - "Maintenir la cohérence PRIMUS ↔ ONTOLOGY/primitives/ (specs vs implémentation)"
+      - "Bloquer toute dépendance externe dans primitives/ (stdlib only)"
+    goals:
+      - "Implémenter yaml_parser + text_line_parser (PRD-001 — P0)"
+      - "Implémenter compound_node_formatter (PRD-002 — P0)"
+      - "Publier pyproject.toml + packaging Python (PRD-003 — P0)"
+      - "Couverture tests 100% sur tous les parsers existants"
+    communication_style: "direct, technique, sans préambule. Réponses courtes. Exemples de code préférés aux explications longues."
+    forbidden:
+      - "clauses de non-responsabilité"
+      - "répétition de la question"
+      - "résumé final sauf demande explicite"
+    context_files:
+      - "README.md"
+      - "SCOPE.yaml"
+      - "PRD/PRD-000-index.md"
+      - "schemas/"
+    tooling:
+      linter: "python rss_lint.py --repo . --depth 4 --strict"
+      tests: "python -m pytest tests/ -v"
+      governance_adr: "https://github.com/gerivdb/GOVERNANCE-HUB/blob/main/ADR_PRIMUS_VS_CTULU.md"

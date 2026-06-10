@@ -1,0 +1,61 @@
+# SCOPE.yaml — PRIMUS
+# Contrat de conformité inter-écosystème gerivdb
+# RSS-v2 §5 — requis dans tout repo Diamond actif
+
+repo: gerivdb/PRIMUS
+type: core
+rss_depth: 4
+activation_phase: 1
+layer: L1-PRIMITIVES
+
+# ── Standards de structure ──────────────────────────────────────────────────
+standards:
+  repo: gerivdb/REPO-STANDARDS
+  version: "v2.0"
+  lint: rss_lint.py
+  lint_cmd: "python rss_lint.py --repo . --depth 4 --strict"
+  last_lint: null   # à remplir par CI
+
+# ── Gouvernance ─────────────────────────────────────────────────────────────
+governance:
+  hub: gerivdb/GOVERNANCE-HUB
+  adr: GOVERNANCE-HUB/ADR_PRIMUS_VS_CTULU.md
+  trit_registry: GOVERNANCE-HUB/TritRegistry.yaml
+  citizens: ./citizens.yaml
+
+# ── Ontologie ───────────────────────────────────────────────────────────────
+ontology:
+  repo: gerivdb/ONTOLOGY
+  spec: ONTOLOGY/PRIMUS_ARCHITECTURE.md
+  primitives_spec: ONTOLOGY/primitives/   # specs déclaratives dont PRIMUS est l'implémentation
+
+# ── Mémoire écosystème ───────────────────────────────────────────────────────
+memory:
+  repo: gerivdb/MIMIR
+  index_key: PRIMUS
+  tags: [primitives, atoms, stateless, parsing, formatting, validation]
+
+# ── Contrat technique de ce repo ─────────────────────────────────────────────
+contract:
+  max_lines_per_primitive: 100
+  stateless: true
+  no_side_effects: true
+  stdlib_only: true          # 0 dépendance externe dans primitives/
+  test_coverage: "100%"      # 1 test par primitive obligatoire
+
+# ── Dépendances (consommateurs) ──────────────────────────────────────────────
+consumers:
+  - repo: gerivdb/CTULU
+    usage: "assemble des primitives PRIMUS en tools multi-repo"
+  - repo: gerivdb/SKILLS
+    usage: "appelle des primitives directement dans les skills cognitifs"
+  - repo: gerivdb/NEXUS
+    usage: "importe des primitives dans les engines métier"
+
+producers: []  # PRIMUS ne dépend d'aucun autre repo de l'écosystème
+
+# ── Hooks CI ────────────────────────────────────────────────────────────────
+ci:
+  pre_commit_hook: .githooks/pre-commit
+  lint_rss: true
+  test_cmd: "python -m pytest tests/ -v --tb=short"
