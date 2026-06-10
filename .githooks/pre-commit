@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+pre-commit — PRIMUS
+Pipeline de validation pre-commit:
+  1. RSS-v2 lint (structure dossiers, rss_depth: 4)
+  2. Contrat primitives (< 100 lignes, stdlib only)
+  3. Encoding check (hors U+0100+)
+
+IntentHash: 0xPRIMUS_PRE_COMMIT_20260610
+Version: 1.0.0
+Standard: gerivdb/REPO-STANDARDS RSS-v2
+
+Installation:
+    git config core.hooksPath .githooks
+"""
+
+import os
+import re
+import sys
+import subprocess
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+INTENT_HASH = "0xPRIMUS_PRE_COMMIT_20260610"
+
+# Seuil contrat primitives
+MAX_LINES_PRIMITIVE = 100
+
+# Imports externes interdits dans primitives/ (stdlib only)
+FORBIDDEN_IMPORT_PATTERN = re.compile(
+    r'^\s*(?:import|from)\s+'
+    r'(?!os|sys|re|json|yaml|pathlib|typing|dataclasses|collections|'
+    r'abc|functools|itertools|math|datetime|hashlib|copy|textwrap|'
+    r'unittest|logging|io|struct|enum|types|contextlib)'
+    r'([a-zA-Z_][a-zA-Z0-9_]*)'
+)
+
+# Encoding: bloque U+0100+ sauf fichiers narratifs
+NON_CP1252_PATTERN = re.compile(r'[\u0100-\uFFFF]')
+TOLERATED_NARRATIFS = {'README.md', 'CHANGELOG.md', 'CONTRIBUTING.md'}
+CHECKED_EXT = {'.yaml', '.yml', '.py', '.sh', '.ps1'}
+
+
+def staged_files():
+    r = subprocess.run(
+        ['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM'],
+        capture_output=True, text=True
+    )
+    return [f.strip() for f in r.stdout.splitlines() if f.strip()] if r.returncode == 0 else []
+
+
+def check_primitive_contract(filepath):
+    """Verifie: < 100 lignes, stdlib only. Retourne liste d'erreurs."""
+    errors = []
+    p = REPO_ROOT / filepath
+    if not p.exists():
+        return errors
+
+    lines = p.read_text(encoding='utf-8', errors='replace').splitlines()
+
+    # Check taille
+    code_lines = [l for l in lines if l.strip() and not l.strip().startswith('#')]
+    if len(code_lines) > MAX_LINES_PRIMITIVE:
+        errors.append(
+            f'  TAILLE: {len(code_lines)} lignes de code > {MAX_LINES_PRIMITIVE} '
+            f'(seuil contrat PRIMUS) => candidat migration CTULU'
+        )
+
+    # Check imports externes
+    for i, line in enumerate(lines, 1):
+        m = FORBIDDEN_IMPORT_PATTERN.match(line)
+        if m:
+            pkg = m.group(1)
+            errors.append(f'  IMPORT_EXTERNE L{i}: "{pkg}" interdit dans primitives/ (stdlib only)')
+
+    return errors
+
+
+def check_encoding(filepath):
+    """Bloque U+0100+ dans fichiers config/code."""
+    fname = os.path.basename(filepath)
+    if fname in TOLERATED_NARRATIFS:
+        return []
+    ext = Path(filepath).suffix.lower()
+    if ext not in CHECKED_EXT:
+        return []
+
+    p = REPO_ROOT / filepath
+    if not p.exists():
+        return []
+
+    errors = []
+    try:
+        for i, line in enumerate(p.read_text(encoding='utf-8', errors='replace').splitlines(), 1):
+            bad = set(NON_CP1252_PATTERN.findall(line))
+            if bad:
+                chars = ', '.join(f'U+{ord(c):04X}' for c in sorted(bad))
+                errors.append(f'  ENCODING L{i}: [{chars}] {line[:60]}')
+    except IOError:
+        pass
+    return errors
+
+
+def main():
+    files = staged_files()
+    if not files:
+        sys.exit(0)
+
+    all_errors = {}
+
+    for f in files:
+        errs = []
+
+        # 1. Contrat primitives (uniquement dans primitives/)
+        if f.startswith('primitives/') and f.endswith('.py'):
+            errs += check_primitive_contract(f)
+
+        # 2. Encoding
+        errs += check_encoding(f)
+
+        if errs:
+            all_errors[f] = errs
+
+    if not all_errors:
+        print(f'[PRIMUS pre-commit] OK — {len(files)} fichier(s) valide(s)')
+        sys.exit(0)
+
+    print(f'[PRIMUS pre-commit] BLOQUE — {sum(len(v) for v in all_errors.values())} violation(s)')
+    print(f'[PRIMUS pre-commit] IntentHash: {INTENT_HASH}')
+    print()
+    for filepath, errs in all_errors.items():
+        print(f'  {filepath}')
+        for e in errs:
+            print(e)
+        print()
+    print('Pour ignorer (deconseille): git commit --no-verify')
+    sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
