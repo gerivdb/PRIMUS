@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "json_schema_validator",
+  "category": "validation",
+  "description": "Valide un objet Python contre un JSON Schema draft-07. Retourne ValidationResult.",
+  "spec_source": "https://github.com/gerivdb/ONTOLOGY/blob/main/primitives/",
+  "input": {
+    "data": {
+      "type": "any",
+      "description": "Objet à valider"
+    },
+    "schema": {
+      "type": "object",
+      "description": "JSON Schema draft-07"
+    }
+  },
+  "output": {
+    "type": "object",
+    "description": "ValidationResult {valid: bool, errors: [], error_count: int}"
+  },
+  "stateless": true,
+  "max_lines": 100,
+  "dependencies": [],
+  "fallback": "stdlib (no external deps required)",
+  "consumed_by": ["CTULU", "SKILLS", "NEXUS"]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "repo_tree_parser",
+  "category": "parsing",
+  "description": "Parse une liste d'entrées repo GitHub en arbre hiérarchique imbriqué.",
+  "spec_source": "https://github.com/gerivdb/ONTOLOGY/blob/main/primitives/",
+  "input": {
+    "entries": {
+      "type": ["array"],
+      "description": "Liste de dicts GitHub API (path+type) ou liste de strings (chemins)"
+    }
+  },
+  "output": {
+    "type": "object",
+    "description": "TreeNode root avec name, type, path, children[]"
+  },
+  "stateless": true,
+  "max_lines": 100,
+  "dependencies": [],
+  "consumed_by": ["CTULU", "SKILLS"]
+}
