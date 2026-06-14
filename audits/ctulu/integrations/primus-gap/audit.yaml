@@ -1,0 +1,71 @@
+# audit.yaml — Audit des primitives manquantes dans PRIMUS
+# Source: EPIC-092 | Producer: gerivdb/PRIMUS
+name: primus-gap-audit
+version: "1.0.0"
+date: "2026-06-13"
+missing_primitives:
+  - name: phi-calc
+    tools: ["phi-anything", "selena-anything"]
+    priority: P0
+    description: "Calcul φ-exposure ternaire et φ-CPS agrégé"
+    impact: "Les outils phi-anything et selena-anything ne peuvent pas calculer les scores φ"
+  - name: temporal-range
+    tools: ["alfred-anything"]
+    priority: P0
+    description: "Raisonnement temporel (before/after/since)"
+    impact: "alfred-anything ne peut pas raisonner sur les délais"
+  - name: semantic-monitor
+    tools: ["selena-anything"]
+    priority: P0
+    description: "Monitoring sémantique continu"
+    impact: "selena-anything ne peut pas monitorer les signaux"
+  - name: topology-router
+    tools: ["sabre-anything"]
+    priority: P0
+    description: "Routage de topologies multi-strate"
+    impact: "sabre-anything ne peut pas router les specs"
+  - name: text-extractor
+    tools: ["text-anything"]
+    priority: P1
+    description: "Extraction de texte structuré (MADR, IntentHash, KEEL)"
+    impact: "text-anything ne peut pas extraire les patterns"
+  - name: rag-injector
+    tools: ["rag-anything"]
+    priority: P1
+    description: "Injection de contexte RAG"
+    impact: "rag-anything ne peut pas injecter du contexte"
+  - name: skill-resolver
+    tools: ["skill-anything"]
+    priority: P1
+    description: "Résolution de dépendances inter-skills"
+    impact: "skill-anything ne peut pas résoudre les deps"
+  - name: thought-commit
+    tools: ["keel-anything"]
+    priority: P2
+    description: "Gestion des thought-commits T1→T5"
+    impact: "keel-anything ne peut pas gérer les .keel"
+  - name: dag-query
+    tools: ["dag-anything"]
+    priority: P2
+    description: "Requêtes DAG avancées (pathfinding, ancestors)"
+    impact: "dag-anything ne peut pas requêter les DAGs"
+  - name: workflow-runner
+    tools: ["workflow-anything"]
+    priority: P1
+    description: "Exécution de workflows multi-étapes"
+    impact: "workflow-anything ne peut pas exécuter les workflows"
+  - name: pipeline-exec
+    tools: ["pipeline-anything"]
+    priority: P2
+    description: "Exécution de pipelines multi-étapes"
+    impact: "pipeline-anything ne peut pas exécuter les pipelines"
+  - name: verse-linker
+    tools: ["verse-anything"]
+    priority: P2
+    description: "Linking inter-Verses"
+    impact: "verse-anything ne peut pas lier les Verses"
+summary:
+  total_missing: 12
+  P0: 4
+  P1: 4
+  P2: 4

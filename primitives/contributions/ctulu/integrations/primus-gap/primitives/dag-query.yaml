@@ -1,0 +1,31 @@
+# primitive: dag-query
+# Fournit: Requêtes DAG avancées (pathfinding, ancestors, descendants)
+# Consommé par: dag-anything, alfred-anything
+# Strate: L1 | Priorité: P2
+# IntentHash: 0xPRIMUS_DAG_QUERY_20260614
+
+name: dag-query
+version: "1.0.0"
+type: query_engine
+strate: L1
+priority: P2
+
+input:
+  dag:
+    type: object
+    description: "Graphe DAG sérialisé (nodes, edges)"
+  query:
+    type: enum
+    values: [pathfinding, ancestors, descendants, critical_path, topo_sort]
+
+output:
+  result:
+    type: object
+  path:
+    type: list
+  metrics:
+    type: object
+
+tools:
+  - dag-anything
+  - alfred-anything

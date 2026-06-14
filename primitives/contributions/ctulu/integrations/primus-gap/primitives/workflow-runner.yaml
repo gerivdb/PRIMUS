@@ -1,0 +1,32 @@
+# primitive: workflow-runner
+# Fournit: Exécution de workflows multi-étapes (YAML → actions)
+# Consommé par: workflow-anything, compose-anything
+# Strate: L1 | Priorité: P1
+# IntentHash: 0xPRIMUS_WORKFLOW_RUNNER_20260614
+
+name: workflow-runner
+version: "1.0.0"
+type: executor
+strate: L1
+priority: P1
+
+input:
+  workflow:
+    type: object
+    description: "Définition du workflow (steps, gates, rollback)"
+  context:
+    type: object
+    description: "Contexte d'exécution (env, vars, targets)"
+
+output:
+  status:
+    type: enum
+    values: [ok, failed, aborted, partial]
+  steps_completed:
+    type: int
+  wal_entries:
+    type: list
+
+tools:
+  - workflow-anything
+  - compose-anything

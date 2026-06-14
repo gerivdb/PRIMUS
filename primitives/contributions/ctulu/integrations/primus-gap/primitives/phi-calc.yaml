@@ -1,0 +1,34 @@
+# primitive: phi-calc
+# Fournit: Calcul φ-exposure ternaire et φ-CPS agrégé
+# Consommé par: phi-anything, selena-anything
+# Strate: L1 | Priorité: P0
+# IntentHash: 0xPRIMUS_PHI_CALC_20260614
+
+name: phi-calc
+version: "1.0.0"
+type: calculator
+strate: L1
+priority: P0
+
+input:
+  ecosystem_state:
+    type: object
+    description: "État de l'écosystème (repos, connexions, PHIs)"
+  floor:
+    type: float
+    default: 0.0
+    description: "Seuil minimal φ-CPS"
+
+output:
+  phi_cps:
+    type: float
+    description: "Score φ-CPS agrégé"
+  status:
+    type: enum
+    values: [below_threshold, ok, transcendent]
+  details:
+    type: object
+
+tools:
+  - phi-anything
+  - selena-anything
