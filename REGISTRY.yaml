@@ -1,0 +1,35 @@
+# primitive: registry-loader
+# Fournit: Chargement et indexation du registre des primitives PRIMUS
+# Consommé par: workflow-anything, cli-anything
+# Strate: L4 | Priorité: P1
+# IntentHash: 0xPRIMUS_REGISTRY_LOADER_20260808
+
+name: registry-loader
+version: "1.0.0"
+type: executor
+strate: L4
+priority: P1
+
+input:
+  registry_path:
+    type: string
+    description: "Chemin vers REGISTRY.yaml ou répertoire primitives/"
+  validate:
+    type: boolean
+    default: true
+    description: "Valider les schémas après chargement"
+
+output:
+  loaded_count:
+    type: int
+    description: "Nombre de primitives chargées"
+  registry:
+    type: object
+    description: "Registre indexé {name: primitive}"
+  errors:
+    type: list
+    description: "Liste des erreurs de chargement"
+
+tools:
+  - workflow-anything
+  - cli-anything
