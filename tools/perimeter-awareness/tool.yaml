@@ -1,7 +1,7 @@
 # intent_hash: 0xPERIMETER_AWARENESS_TOOL_20260916
 name: "perimeter-awareness"
 version: "1.0.0"
-description: "Universal Self-Recognition Protocol -- Auto-reconnaissance du perimetre d'implementation depuis n'importe quel repo"
+description: "Universal Self-Recognition Protocol -- Auto-reconnaissance du périmètre d'implémentation depuis n'importe quel repo"
 entry_point: "perimeter_awareness.py"
 intent_hash: "0xPERIMETER_AWARENESS_20260916"
 category: "governance"
@@ -30,4 +30,3 @@ tags:
   - perimeter
   - self-recognition
   - cross-repo
-
