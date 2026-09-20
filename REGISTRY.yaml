@@ -1,35 +1,150 @@
-# primitive: registry-loader
-# Fournit: Chargement et indexation du registre des primitives PRIMUS
-# Consommé par: workflow-anything, cli-anything
-# Strate: L4 | Priorité: P1
-# IntentHash: 0xPRIMUS_REGISTRY_LOADER_20260808
-
-name: registry-loader
+---
+name: PRIMUS
 version: "1.0.0"
-type: executor
+description: Registre des primitives de l'écosystème gerivdb
 strate: L4
 priority: P1
-
-input:
-  registry_path:
-    type: string
-    description: "Chemin vers REGISTRY.yaml ou répertoire primitives/"
-  validate:
-    type: boolean
-    default: true
-    description: "Valider les schémas après chargement"
-
-output:
-  loaded_count:
-    type: int
-    description: "Nombre de primitives chargées"
-  registry:
-    type: object
-    description: "Registre indexé {name: primitive}"
-  errors:
-    type: list
-    description: "Liste des erreurs de chargement"
-
-tools:
-  - workflow-anything
-  - cli-anything
+primitives:
+  - name: registry-loader
+    version: "1.0.0"
+    type: executor
+    strate: L4
+    priority: P1
+    input:
+      registry_path:
+        type: string
+        description: "Chemin vers REGISTRY.yaml ou répertoire primitives/"
+      validate:
+        type: boolean
+        default: true
+        description: "Valider les schémas après chargement"
+    output:
+      loaded_count:
+        type: int
+        description: "Nombre de primitives chargées"
+      registry:
+        type: object
+        description: "Registre indexé {name: primitive}"
+      errors:
+        type: list
+        description: "Liste des erreurs de chargement"
+    tools:
+      - workflow-anything
+      - cli-anything
+  - name: repo-tree-parser
+    version: "1.0.0"
+    type: parser
+    strate: L4
+    priority: P1
+    input:
+      repo_path:
+        type: string
+        description: "Chemin vers la racine du dépôt"
+      include_hidden:
+        type: boolean
+        default: false
+    output:
+      tree:
+        type: object
+        description: "Arborescence du dépôt"
+      file_count:
+        type: int
+    tools:
+      - workflow-anything
+  - name: json-schema-validator
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      schema_path:
+        type: string
+      data:
+        type: object
+    output:
+      valid:
+        type: boolean
+      errors:
+        type: list
+    tools:
+      - cli-anything
+  - name: frontmatter-intent-validator
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      file_path:
+        type: string
+      intent_hash:
+        type: string
+    output:
+      valid:
+        type: boolean
+      errors:
+        type: list
+    tools:
+      - cli-anything
+  - name: intent-hash-generator
+    version: "1.0.0"
+    type: generator
+    strate: L4
+    priority: P1
+    input:
+      context:
+        type: string
+      date:
+        type: string
+    output:
+      intent_hash:
+        type: string
+    tools:
+      - cli-anything
+  - name: phi-calc
+    version: "1.0.0"
+    type: calculator
+    strate: L4
+    priority: P1
+    input:
+      numerator:
+        type: number
+      denominator:
+        type: number
+    output:
+      phi:
+        type: number
+    tools:
+      - workflow-anything
+  - name: workflow-runner
+    version: "1.0.0"
+    type: executor
+    strate: L4
+    priority: P1
+    input:
+      workflow_path:
+        type: string
+      dry_run:
+        type: boolean
+        default: false
+    output:
+      status:
+        type: string
+      steps_executed:
+        type: int
+    tools:
+      - workflow-anything
+  - name: dag-query
+    version: "1.0.0"
+    type: query
+    strate: L4
+    priority: P1
+    input:
+      dag_path:
+        type: string
+      query:
+        type: string
+    output:
+      result:
+        type: object
+    tools:
+      - workflow-anything

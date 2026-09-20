@@ -140,3 +140,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# --- KG-L governance gate (GEN-025 / ADR-2026-08-27-001) ---
+# Injecté via REPO-STANDARDS/scripts/install-kg-l-hooks.py — idempotent.
+# GF-15 (validate_designs) réservé à KG-L (env KG_L_GOVERNANCE_SCOPE=kg-l).
+# (consommateur) scope kg-l désactivé
+python .githooks/pre-commit-kg-l-governance.py
+# --- /KG-L-GOVERNANCE-GATE ---
