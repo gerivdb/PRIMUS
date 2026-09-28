@@ -55,6 +55,44 @@ Chaque primitive doit respecter :
 | **NEXUS** | Importe des primitives PRIMUS dans les engines métier |
 | **ONTOLOGY/primitives/** | Contient les *specs déclaratives* (YAML) dont PRIMUS est l'implémentation |
 | **DevTools** | N'importe pas PRIMUS — niveau infra, pas logique |
+| **JEVX** | Source de primitives `validation` et `logic` importées comme `reference_impl` |
+| **localjev-upstream** | Source de primitives `logic` importées comme `reference_impl` |
+
+---
+
+## Primitives importées
+
+### Depuis JEVX (`validation`)
+
+| Primitive | Fichier | Description |
+|---|---|---|
+| `gitignore-audit` | `primitives/validation/gitignore_audit.py` | Audit .gitignore d'un dépôt git |
+| `mcp-scope-check` | `primitives/validation/mcp_scope_check.py` | Vérifie la portée MCP/shell d'un chemin |
+| `tool-schema-validator` | `primitives/validation/tool_schema_validator.py` | Valide les paramètres d'appels outils |
+| `yaml-editor` | `primitives/validation/yaml_editor.py` | Édition YAML sécurisée |
+
+### Depuis JEVX (`logic`)
+
+| Primitive | Fichier | Description |
+|---|---|---|
+| `benchmark-latency` | `primitives/logic/benchmark_latency.py` | Mesure la latence d'un endpoint HTTP |
+| `entropy-monitor` | `primitives/logic/entropy_monitor.py` | Calcule l'entropie d'une distribution |
+| `generate-validation-report` | `primitives/logic/generate_validation_report.py` | Génère un rapport de validation |
+| `integration-score` | `primitives/logic/integration_score.py` | Calcule un score d'intégration global |
+| `model-selector` | `primitives/logic/model_selector.py` | Sélectionne le meilleur modèle candidat |
+| `service-lifecycle` | `primitives/logic/service_lifecycle.py` | Valide un manifeste de services |
+
+### Depuis localjev-upstream (`logic`)
+
+| Primitive | Fichier | Description |
+|---|---|---|
+| `confidence` | `primitives/logic/confidence.py` | Calcule la confiance d'une distribution |
+| `normalize-distribution` | `primitives/logic/normalize_distribution.py` | Normalise une distribution de probabilités |
+| `prepare-questions` | `primitives/logic/prepare_questions.py` | Prépare les questions pour l'inférence |
+| `build-output-schema` | `primitives/logic/build_output_schema.py` | Construit le schéma de sortie JSON |
+| `decode-answers` | `primitives/logic/decode_answers.py` | Décode les réponses brutes |
+| `extract-json` | `primitives/logic/extract_json.py` | Extrait un objet JSON d'une chaîne brute |
+| `validate-system-one-request` | `primitives/logic/validate_system_one_request.py` | Valide une requête System-1 |
 
 ---
 
