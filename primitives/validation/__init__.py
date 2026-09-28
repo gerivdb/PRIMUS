@@ -1,6 +1,7 @@
 from .json_schema_validator import json_schema_validator, ValidationResult, ValidationError
 from .gitignore_audit import gitignore_audit, GitignoreAuditResult
 from .mcp_scope_check import mcp_scope_check, McpScopeResult
+from .tool_schema_validator import tool_schema_validator, ToolSchemaValidationResult, ToolSchemaValidationError
 
 __all__ = [
     "json_schema_validator",
@@ -10,4 +11,7 @@ __all__ = [
     "GitignoreAuditResult",
     "mcp_scope_check",
     "McpScopeResult",
+    "tool_schema_validator",
+    "ToolSchemaValidationResult",
+    "ToolSchemaValidationError",
 ]
