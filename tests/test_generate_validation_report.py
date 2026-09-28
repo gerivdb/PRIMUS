@@ -1,42 +1,44 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-import sys
-from pathlib import Path
+"""Tests pour primitives/logic/generate_validation_report.py."""
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from __future__ import annotations
 
-from primitives.logic.reporting.generate_validation_report import generate_validation_report, ValidationReport
+import pytest
+
+from primitives.logic.generate_validation_report import (
+    ValidationReportResult,
+    generate_validation_report,
+)
 
 
-def test_report_mixed_results():
+def test_all_pass():
     results = [
-        {"name": "a", "passed": True},
-        {"name": "b", "passed": False},
-        {"name": "c", "passed": True},
+        {"name": "test_a", "status": "PASS", "exit_code": 0, "stdout": "", "stderr": ""},
+        {"name": "test_b", "status": "PASS", "exit_code": 0, "stdout": "", "stderr": ""},
     ]
     report = generate_validation_report(results)
-    assert isinstance(report, ValidationReport)
-    assert report.total == 3
-    assert report.passed == 2
-    assert report.failed == 1
-    assert report.summary["pass_rate"] == 2 / 3
+    assert isinstance(report, ValidationReportResult)
+    assert report.summary["total"] == 2
+    assert report.summary["passed"] == 2
+    assert report.summary["failed"] == 0
+    assert report.summary["result"] == "PASS"
+    assert len(report.details) == 2
 
 
-def test_report_all_passed():
-    results = [{"name": "a", "passed": True}]
+def test_mixed_results():
+    results = [
+        {"name": "test_a", "status": "PASS", "exit_code": 0, "stdout": "", "stderr": ""},
+        {"name": "test_b", "status": "FAIL", "exit_code": 1, "stdout": "", "stderr": "boom"},
+    ]
     report = generate_validation_report(results)
-    assert report.passed == 1
-    assert report.failed == 0
+    assert report.summary["total"] == 2
+    assert report.summary["passed"] == 1
+    assert report.summary["failed"] == 1
+    assert report.summary["result"] == "FAIL"
+    assert report.details[1]["stderr"] == "boom"
 
 
-def test_report_empty():
+def test_empty_results():
     report = generate_validation_report([])
-    assert report.total == 0
-    assert report.summary["pass_rate"] == 0.0
-
-
-if __name__ == "__main__":
-    test_report_mixed_results()
-    test_report_all_passed()
-    test_report_empty()
-    print("OK: All generate_validation_report tests passed")
+    assert report.summary["total"] == 0
+    assert report.summary["result"] == "PASS"
+    assert report.details == []
