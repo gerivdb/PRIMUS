@@ -6,26 +6,30 @@ Catégorie : validation
 Spec      : PRIMUS primitive contract
 
 Responsabilité unique :
-  Détermine si un chemin est accessible via MCP filesystem
-  ou nécessite bash/PowerShell.
+  Détermine si un chemin est accessible via MCP filesystem,
+  shell, ou bloqué.
 
 Contrat :
-  - Input  : path: str
-  - Output : McpScopeResult  {path, exists, mcp_scope, shell_scope, recommended_tool}
+  - Input  : path: str | Path
+  - Output : McpScopeResult
   - Side effects: none
-  - Dépendances: stdlib uniquement
+  - Dépendances: stdlib only
 """
+from __future__ import annotations
+
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 
 @dataclass
 class McpScopeResult:
-    path: str
-    exists: bool
-    mcp_scope: bool
-    shell_scope: bool
-    recommended_tool: str
+    path: str = ""
+    exists: bool = False
+    mcp_scope: bool = False
+    shell_scope: bool = False
+    recommended_tool: str = ""
+    error: str | None = None
 
 
 ALLOWED_MCP_DIRS = [
@@ -40,31 +44,27 @@ SHELL_ALWAYS_OK = [
 ]
 
 
-def _under_any(path: str, dirs: list[str]) -> bool:
-    p = Path(path).resolve()
-    for allowed in dirs:
+def _under_any(path: Path, bases: list[str]) -> bool:
+    for base in bases:
         try:
-            p.relative_to(Path(allowed).resolve())
+            path.relative_to(Path(base).resolve())
             return True
         except ValueError:
             continue
     return False
 
 
-def mcp_scope_check(path: str) -> McpScopeResult:
-    """Check if a path is accessible via MCP filesystem or shell."""
+def mcp_scope_check(path: str | Path) -> McpScopeResult:
     p = Path(path).resolve()
     exists = p.exists()
-    mcp_scope = _under_any(path, ALLOWED_MCP_DIRS)
-    shell_scope = _under_any(path, SHELL_ALWAYS_OK)
-
+    mcp_scope = _under_any(p, ALLOWED_MCP_DIRS)
+    shell_scope = _under_any(p, SHELL_ALWAYS_OK)
     if mcp_scope:
         recommended_tool = "mcp"
     elif shell_scope:
         recommended_tool = "shell"
     else:
         recommended_tool = "blocked"
-
     return McpScopeResult(
         path=str(p),
         exists=exists,
@@ -76,15 +76,16 @@ def mcp_scope_check(path: str) -> McpScopeResult:
 
 if __name__ == "__main__":
     import json
-    import sys
 
-    path = sys.argv[1] if len(sys.argv) > 1 else "."
-    result = mcp_scope_check(path)
-    print(json.dumps({
+    target = sys.argv[1] if len(sys.argv) > 1 else str(Path.cwd())
+    result = mcp_scope_check(target)
+    payload = {
         "path": result.path,
         "exists": result.exists,
         "mcp_scope": result.mcp_scope,
         "shell_scope": result.shell_scope,
         "recommended_tool": result.recommended_tool,
-    }, indent=2))
+        "error": result.error,
+    }
+    print(json.dumps(payload, indent=2))
     sys.exit(2 if result.recommended_tool == "blocked" else 0)
