@@ -148,3 +148,26 @@ primitives:
         type: object
     tools:
       - workflow-anything
+  - name: gitignore-audit
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      repo_root:
+        type: string
+        description: "Chemin vers la racine du dépôt git"
+    output:
+      ignored_count:
+        type: int
+      staged_count:
+        type: int
+      conflict_count:
+        type: int
+      error:
+        type: string
+        nullable: true
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/gitignore-audit.py
