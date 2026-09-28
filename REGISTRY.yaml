@@ -87,7 +87,7 @@ primitives:
       - cli-anything
   - name: intent-hash-generator
     version: "1.0.0"
-    type: generator
+    type: transformer
     strate: L4
     priority: P1
     input:
@@ -171,29 +171,6 @@ primitives:
       - workflow-anything
     source_repo: gerivdb/JEVX
     reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/gitignore-audit.py
-  - name: gitignore-audit
-    version: "1.0.0"
-    type: validator
-    strate: L4
-    priority: P1
-    input:
-      repo_root:
-        type: string
-        description: "Chemin vers la racine du dépôt git"
-    output:
-      ignored_count:
-        type: int
-      staged_count:
-        type: int
-      conflict_count:
-        type: int
-      error:
-        type: string
-        nullable: true
-    tools:
-      - workflow-anything
-    source_repo: gerivdb/JEVX
-    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/gitignore-audit.py
   - name: mcp-scope-check
     version: "1.0.0"
     type: validator
@@ -238,6 +215,26 @@ primitives:
         type: int
       errors:
         type: list
+    tools:
+      - workflow-anything
+  - name: yaml-editor
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      path:
+        type: string
+      data:
+        type: object
+    output:
+      path:
+        type: string
+      bytes_written:
+        type: int
+      error:
+        type: string
+        nullable: true
     tools:
       - workflow-anything
   - name: confidence
@@ -348,3 +345,162 @@ primitives:
       - workflow-anything
     source_repo: gerivdb/localjev-upstream
     reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: validate-system-one-request
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      request:
+        type: object
+    output:
+      valid:
+        type: boolean
+      error_count:
+        type: int
+      errors:
+        type: list
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: benchmark-latency
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      url:
+        type: string
+      runs:
+        type: int
+        default: 10
+      payload:
+        type: object
+        nullable: true
+      timeout:
+        type: number
+        default: 10.0
+    output:
+      avg_ms:
+        type: number
+      median_ms:
+        type: number
+      min_ms:
+        type: number
+      max_ms:
+        type: number
+      error:
+        type: string
+        nullable: true
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/benchmark_latency.py
+  - name: entropy-monitor
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      probabilities:
+        type: array
+        items:
+          type: number
+    output:
+      entropy:
+        type: number
+      normalized_entropy:
+        type: number
+      max_entropy:
+        type: number
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/entropy_monitor.py
+  - name: generate-validation-report
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      results:
+        type: array
+        items:
+          type: object
+    output:
+      summary:
+        type: object
+      details:
+        type: array
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/generate_validation_report.py
+  - name: integration-score
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      contract_score:
+        type: number
+      matrix_score:
+        type: number
+      crosslink_score:
+        type: number
+    output:
+      overall:
+        type: number
+      status:
+        type: string
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/integration_score.py
+  - name: model-selector
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      models:
+        type: array
+        items:
+          type: object
+      min_size_mb:
+        type: int
+        default: 0
+    output:
+      best_model:
+        type: string
+        nullable: true
+      best_size_mb:
+        type: number
+      all_candidates:
+        type: array
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/model_selector.py
+  - name: service-lifecycle
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      services:
+        type: array
+        items:
+          type: object
+    output:
+      valid:
+        type: boolean
+      error_count:
+        type: int
+      errors:
+        type: list
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/service_lifecycle.py

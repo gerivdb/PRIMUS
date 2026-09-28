@@ -16,7 +16,6 @@ Contrat :
   - Effets de bord : aucun
   - Dépendances : stdlib uniquement
 """
-from __future__ import annotations
 from typing import Any, Dict, List, Union
 
 

@@ -1,4 +1,4 @@
-# PRIMUS Registry — Registre des primitives
+# PRIMUS Registry - Registre des primitives
 # IntentHash: 0xPRIMUS_REGISTRY_20260808
 # ADR: ADR-2026-08-08-001-PRIMUS-CORE-REGISTRY
 
@@ -36,6 +36,9 @@ class PrimitiveType(str, Enum):
     TRANSFORMER = "transformer"
     EXECUTOR = "executor"
     FORMATTER = "formatter"
+    CALCULATOR = "calculator"
+    QUERY = "query"
+    LOGIC = "logic"
 
 
 class Priority(str, Enum):
@@ -114,23 +117,36 @@ class PrimitiveRegistry:
 
     def load_file(self, path: Union[str, Path]) -> None:
         """
-        Charge un fichier YAML/JSON de primitive.
+        Charge un fichier YAML/JSON de primitive ou un registre global.
         
         Args:
             path: Chemin vers le fichier YAML/JSON
-            
+                 
         Raises:
             FileNotFoundError: Si le fichier n'existe pas
             ValueError: Si la primitive est invalide ou en doublon
         """
-        from .loader import load_primitive_file
+        from .loader import load_primitive_file, _parse_content, _to_primitive_definition
+        import yaml
         
         path_str = str(Path(path).resolve())
         if path_str in self._loaded_paths:
             return  # Déjà chargé
         
-        primitive = load_primitive_file(path_str)
-        self._register(primitive)
+        # Détecter si c'est un registre global (clé "primitives")
+        raw = Path(path_str).read_text(encoding="utf-8")
+        data = _parse_content(raw, Path(path_str).suffix)
+        
+        if isinstance(data, dict) and "primitives" in data:
+            # Registre global : charger toutes les primitives
+            for primitive_data in data["primitives"]:
+                primitive = _to_primitive_definition(primitive_data)
+                self._register(primitive)
+        else:
+            # Fichier de primitive individuelle
+            primitive = load_primitive_file(path_str)
+            self._register(primitive)
+        
         self._loaded_paths.add(path_str)
 
     def load_directory(self, dir_path: Union[str, Path]) -> List[str]:

@@ -17,7 +17,6 @@ Contrat :
   - Dépendances : stdlib uniquement (pas de jsonschema externe requis)
                   Si jsonschema est installé, il est utilisé automatiquement.
 """
-from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 

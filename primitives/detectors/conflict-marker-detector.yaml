@@ -1,0 +1,35 @@
+---
+type: PRIMITIVE
+version: "1.0.0"
+date: "2026-09-21"
+intent_hash: 0xPRIMITIVE_CONFLICT_MARKER_DETECTOR_20260921
+repo: gerivdb/PRIMUS
+strate: L4
+priority: P1
+---
+
+name: conflict-marker-detector
+version: "1.0.0"
+type: detector
+strates: L4
+priority: P1
+input:
+  file_path:
+    type: string
+    description: "Chemin vers le fichier à analyser"
+output:
+  has_conflicts:
+    type: boolean
+    description: "True si des marqueurs de conflit sont présents"
+  conflict_count:
+    type: int
+    description: "Nombre de marqueurs de conflit détectés"
+  conflicts:
+    type: list
+    description: "Liste des lignes contenant des marqueurs de conflit"
+tools:
+  - workflow-anything
+effects:
+  - read_file
+tests:
+  - test_conflict_marker_detector.py

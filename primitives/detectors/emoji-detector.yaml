@@ -1,0 +1,35 @@
+---
+type: PRIMITIVE
+version: "1.0.0"
+date: "2026-09-21"
+intent_hash: 0xPRIMITIVE_EMOJI_DETECTOR_20260921
+repo: gerivdb/PRIMUS
+strate: L4
+priority: P1
+---
+
+name: emoji-detector
+version: "1.0.0"
+type: detector
+strates: L4
+priority: P1
+input:
+  file_path:
+    type: string
+    description: "Chemin vers le fichier à analyser"
+output:
+  has_emojis:
+    type: boolean
+    description: "True si des emojis sont présents"
+  emoji_count:
+    type: int
+    description: "Nombre d'emojis détectés"
+  emojis:
+    type: list
+    description: "Liste des emojis détectés"
+tools:
+  - workflow-anything
+effects:
+  - read_file
+tests:
+  - test_emoji_detector.py
