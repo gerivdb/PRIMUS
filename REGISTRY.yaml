@@ -171,3 +171,180 @@ primitives:
       - workflow-anything
     source_repo: gerivdb/JEVX
     reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/gitignore-audit.py
+  - name: gitignore-audit
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      repo_root:
+        type: string
+        description: "Chemin vers la racine du dépôt git"
+    output:
+      ignored_count:
+        type: int
+      staged_count:
+        type: int
+      conflict_count:
+        type: int
+      error:
+        type: string
+        nullable: true
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/gitignore-audit.py
+  - name: mcp-scope-check
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      path:
+        type: string
+        description: "Chemin à vérifier"
+    output:
+      path:
+        type: string
+      exists:
+        type: boolean
+      mcp_scope:
+        type: boolean
+      shell_scope:
+        type: boolean
+      recommended_tool:
+        type: string
+    tools:
+      - workflow-anything
+  - name: tool-schema-validator
+    version: "1.0.0"
+    type: validator
+    strate: L4
+    priority: P1
+    input:
+      tools:
+        type: array
+        items:
+          type: object
+      schema:
+        type: object
+        nullable: true
+    output:
+      valid:
+        type: boolean
+      valid_count:
+        type: int
+      invalid_count:
+        type: int
+      errors:
+        type: list
+    tools:
+      - workflow-anything
+  - name: confidence
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      probabilities:
+        type: array
+        items:
+          type: number
+    output:
+      confidence:
+        type: number
+        minimum: 0
+        maximum: 1
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: normalize-distribution
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      probabilities:
+        type: array
+        items:
+          type: number
+    output:
+      normalized:
+        type: array
+        items:
+          type: number
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: extract-json
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      text:
+        type: string
+    output:
+      json:
+        type: object
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: prepare-questions
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      questions:
+        type: object
+        additionalProperties:
+          type: object
+    output:
+      prepared:
+        type: array
+        items:
+          type: object
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: build-output-schema
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      questions:
+        type: array
+        items:
+          type: object
+    output:
+      schema:
+        type: object
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
+  - name: decode-answers
+    version: "1.0.0"
+    type: logic
+    strate: L4
+    priority: P1
+    input:
+      raw:
+        type: object
+      questions:
+        type: array
+        items:
+          type: object
+    output:
+      answers:
+        type: object
+    tools:
+      - workflow-anything
+    source_repo: gerivdb/localjev-upstream
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/localjev-upstream/src/engine.ts
