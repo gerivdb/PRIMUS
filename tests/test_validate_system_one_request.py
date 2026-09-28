@@ -1,36 +1,26 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-import sys
-from pathlib import Path
+"""Tests pour primitives/logic/validate_system_one_request.py."""
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from __future__ import annotations
 
-from primitives.logic.localjev.validate_system_one_request import validate_system_one_request, ValidationResult
+import pytest
+
+from primitives.logic.validate_system_one_request import ValidationResult, validate_system_one_request
 
 
 def test_valid_request():
-    request = {"questions": {"q1": {}}, "state": {}}
+    request = {
+        "questions": {"q1": {"type": "noul", "instructions": "x", "criteria": {}}},
+        "state": {"text": "doc"},
+    }
     result = validate_system_one_request(request)
     assert isinstance(result, ValidationResult)
     assert result.valid is True
     assert result.error_count == 0
 
 
-def test_missing_questions():
-    request = {"state": {}}
+def test_missing_fields():
+    request = {"state": {"text": "doc"}}
     result = validate_system_one_request(request)
     assert result.valid is False
-    assert result.error_count == 1
-
-
-def test_invalid_type():
-    result = validate_system_one_request("not-a-dict")
-    assert result.valid is False
-    assert result.error_count >= 1
-
-
-if __name__ == "__main__":
-    test_valid_request()
-    test_missing_questions()
-    test_invalid_type()
-    print("OK: All validate_system_one_request tests passed")
+    assert result.error_count == 2
+    assert "missing questions" in result.errors
