@@ -193,6 +193,8 @@ primitives:
         type: string
     tools:
       - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/mcp-scope-check.py
   - name: tool-schema-validator
     version: "1.0.0"
     type: validator
@@ -217,6 +219,8 @@ primitives:
         type: list
     tools:
       - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/tool-schema-validator.py
   - name: yaml-editor
     version: "1.0.0"
     type: validator
@@ -237,6 +241,8 @@ primitives:
         nullable: true
     tools:
       - workflow-anything
+    source_repo: gerivdb/JEVX
+    reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/tools/yaml-editor.py
   - name: confidence
     version: "1.0.0"
     type: logic
