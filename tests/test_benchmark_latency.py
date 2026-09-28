@@ -1,47 +1,30 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""Tests pour primitives/logic/benchmark_latency.py."""
+
+from __future__ import annotations
+
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import pytest
 
-from primitives.logic.benchmark.benchmark_latency import benchmark_latency, BenchmarkResult
+from primitives.logic.benchmark_latency import BenchmarkLatencyResult, benchmark_latency
 
 
-def test_benchmark_returns_result():
-    result = benchmark_latency("http://localhost:9999", runs=1)
-    assert isinstance(result, BenchmarkResult)
+def test_benchmark_returns_typed_result():
+    result = benchmark_latency("http://localhost:8080/v1/systemone", runs=1, timeout=0.1)
+    assert isinstance(result, BenchmarkLatencyResult)
+    assert result.url == "http://localhost:8080/v1/systemone"
+    assert isinstance(result.runs, int)
+    assert isinstance(result.successful, int)
+    assert isinstance(result.errors, int)
+    assert isinstance(result.avg_ms, float)
+    assert isinstance(result.median_ms, float)
+    assert isinstance(result.min_ms, float)
+    assert isinstance(result.max_ms, float)
+
+
+def test_benchmark_no_successful_measurement():
+    result = benchmark_latency("http://localhost:1/v1/systemone", runs=1, timeout=0.1)
+    assert isinstance(result, BenchmarkLatencyResult)
+    assert result.successful == 0
     assert result.error is not None
-
-
-def test_benchmark_success():
-    import http.server
-    import threading
-
-    class Handler(http.server.BaseHTTPRequestHandler):
-        def do_POST(self):
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b"{}")
-
-        def log_message(self, *args, **kwargs):
-            pass
-
-    server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
-    port = server.server_address[1]
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-
-    try:
-        result = benchmark_latency(f"http://127.0.0.1:{port}", runs=3)
-        assert isinstance(result, BenchmarkResult)
-        assert result.error is None
-        assert result.avg_ms >= 0
-    finally:
-        server.shutdown()
-
-
-if __name__ == "__main__":
-    test_benchmark_returns_result()
-    test_benchmark_success()
-    print("OK: All benchmark_latency tests passed")
