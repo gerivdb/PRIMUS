@@ -636,4 +636,40 @@ primitives:
       - meta-executor
     source_repo: gerivdb/AUTO-DEV
     reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/cycle_runner.py
+  - name: yaml_parser
+    version: "1.0.0"
+    type: parser
+    strate: L4
+    priority: P1
+    input:
+      content:
+        type: string
+        description: "Contenu YAML brut à parser"
+    output:
+      type: object
+      description: "Objet Python parsé (dict ou list)"
+    tools: []
+  - name: text_line_parser
+    version: "1.0.0"
+    type: parser
+    strate: L4
+    priority: P1
+    input:
+      content:
+        type: string
+        description: "Contenu texte brut à parser"
+      comment_char:
+        type: string
+        default: "#"
+        description: "Caractère indiquant un commentaire"
+      strip:
+        type: boolean
+        default: true
+        description: "Supprimer les espaces en début/fin de ligne"
+    output:
+      type: array
+      items:
+        type: string
+      description: "Liste des lignes non vides et non commentées"
+    tools: []
 

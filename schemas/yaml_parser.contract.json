@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "yaml_parser.contract",
+  "description": "Contrat d'interface de la primitive yaml_parser (PRIMUS)",
+  "type": "object",
+  "properties": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Contenu YAML brut à parser"
+        }
+      },
+      "required": ["content"],
+      "additionalProperties": false
+    },
+    "output": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "array" }
+      ],
+      "description": "Objet Python parsé (dict ou list)"
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Liste des erreurs (vide si succès)"
+    },
+    "side_effects": {
+      "type": "boolean",
+      "const": false,
+      "description": "Aucun effet de bord"
+    },
+    "stdlib_only": {
+      "type": "boolean",
+      "const": true,
+      "description": "Stdlib uniquement, aucune dépendance externe"
+    }
+  },
+  "required": ["input", "output"],
+  "additionalProperties": false
+}
