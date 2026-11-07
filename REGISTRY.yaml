@@ -510,3 +510,130 @@ primitives:
       - workflow-anything
     source_repo: gerivdb/JEVX
     reference_impl: D:/DO/WEB/TOOLS/L4-TOOLS/JEVX/scripts/service_lifecycle.py
+  - name: meta-detector
+    version: "1.0.0"
+    type: detector
+    strate: L4
+    priority: P1
+    input:
+      sources:
+        type: array
+        items:
+          type: string
+        description: "Liste des sources méta à scanner"
+    output:
+      detection:
+        type: object
+        description: "Résultat du scan des sources méta"
+      status:
+        type: string
+    tools:
+      - workflow-anything
+      - filesystem
+    source_repo: gerivdb/AUTO-DEV
+    reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/meta_detector.py
+  - name: meta-planner
+    version: "1.0.0"
+    type: planner
+    strate: L4
+    priority: P1
+    input:
+      detection:
+        type: object
+        description: "Résultat du scan méta"
+    output:
+      plan:
+        type: object
+        description: "Plan d'action avec PRD/MOC et tâches"
+      tasks:
+        type: list
+    tools:
+      - workflow-anything
+      - yaml-writer
+    source_repo: gerivdb/AUTO-DEV
+    reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/meta_planner.py
+  - name: meta-executor
+    version: "1.0.0"
+    type: executor
+    strate: L4
+    priority: P1
+    input:
+      detection:
+        type: object
+        description: "Résultat du scan méta"
+      repo_cible:
+        type: string
+        description: "Repo cible pour l'implémentation"
+    output:
+      result:
+        type: object
+        description: "Résultat du cycle P1->P7"
+      meta_result:
+        type: object
+        description: "Résultat de la méta-détection S0"
+    tools:
+      - workflow-anything
+      - cycle-runner
+    source_repo: gerivdb/AUTO-DEV
+    reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/meta_executor.py
+  - name: meta-trace
+    version: "1.0.0"
+    type: tracer
+    strate: L4
+    priority: P1
+    input:
+      plan:
+        type: object
+        description: "Plan d'action méta"
+      result:
+        type: object
+        description: "Résultat de l'exécution"
+    output:
+      trace:
+        type: object
+        description: "Traçabilité NEXUS/WAZAA/MIMIR"
+      nexus_event:
+        type: object
+        description: "Event NEXUS WAL"
+      wazaa_event:
+        type: object
+        description: "Event WAZAA"
+      mimir_log:
+        type: string
+        description: "Log MIMIR"
+    tools:
+      - workflow-anything
+      - nexus-writer
+      - wazaa-publisher
+    source_repo: gerivdb/AUTO-DEV
+    reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/meta_trace.py
+  - name: S0-meta-detection
+    version: "1.0.0"
+    type: detector
+    strate: L4
+    priority: P0
+    input:
+      repo_cible:
+        type: string
+        description: "Repo cible pour le cycle AUTO-DEV"
+      axe:
+        type: string
+        description: "Axe de travail"
+    output:
+      meta_result:
+        type: object
+        description: "Résultat de la méta-détection S0"
+      detection:
+        type: object
+        description: "Résultat du scan des 7 sources"
+      plan:
+        type: object
+        description: "Plan d'action méta"
+    tools:
+      - workflow-anything
+      - meta-detector
+      - meta-planner
+      - meta-executor
+    source_repo: gerivdb/AUTO-DEV
+    reference_impl: D:/DO/WEB/TOOLS/L2-PLATFORM/auto-dev/agents/cycle_runner.py
+

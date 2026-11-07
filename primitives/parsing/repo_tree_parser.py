@@ -49,7 +49,7 @@ def repo_tree_parser(
 
     Returns:
         Dict root avec clé "children" contenant l'arbre imbriqué.
-        Chaque nœud : {name, type, path, children}
+        Chaque noeud : {name, type, path, children}
     """
     paths = _normalize(entries)
     root: TreeNode = {"name": "", "type": "dir", "path": "", "children": []}
@@ -71,7 +71,7 @@ def flatten_tree(root: Dict[str, Any]) -> List[str]:
 def find_in_tree(root: Dict[str, Any], name: str) -> List[TreeNode]:
     """
     Recherche par nom dans l'arbre (recherche en profondeur).
-    Retourne tous les nœuds dont le nom correspond exactement.
+    Retourne tous les noeuds dont le nom correspond exactement.
     Stateless. Pas d'effets de bord.
     """
     results: List[TreeNode] = []
