@@ -39,10 +39,14 @@ class PrimitiveType(str, Enum):
     CALCULATOR = "calculator"
     QUERY = "query"
     LOGIC = "logic"
+    DETECTOR = "detector"
+    PLANNER = "planner"
+    TRACER = "tracer"
 
 
 class Priority(str, Enum):
     """Niveaux de priorité."""
+    P0 = "P0"  # Bloquant
     P1 = "P1"  # Critique
     P2 = "P2"  # Important
     P3 = "P3"  # Standard
