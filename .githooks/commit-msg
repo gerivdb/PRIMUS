@@ -1,0 +1,10 @@
+#!/bin/sh
+# Shard PRIMUS commit-msg hook shim — delegates to PowerShell implementation
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$ROOT" ]; then exit 0; fi
+if command -v pwsh >/dev/null 2>&1; then
+  exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$ROOT/.githooks/commit-msg.ps1" "$@"
+elif command -v powershell >/dev/null 2>&1; then
+  exec powershell -NoProfile -ExecutionPolicy Bypass -File "$ROOT/.githooks/commit-msg.ps1" "$@"
+fi
+exit 0
